@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 export default function DashboardWithKey({ email }: { email: string }) {
   const supabase = createClient();
@@ -112,11 +113,19 @@ export default function DashboardWithKey({ email }: { email: string }) {
 
   return (
     <div className="w-full max-w-lg bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-10">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold tracking-tight">Welcome back</h2>
-        <p className="text-gray-400 mt-2 text-sm">
-          Logged in as <span className="text-indigo-400">{email}</span>
-        </p>
+      <div className="flex flex-column mb-8">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Welcome back</h2>
+          <p className="text-gray-400 mt-2 text-sm">
+            Logged in as <span className="text-indigo-400">{email}</span>
+          </p>
+        </div>
+        <Link
+          href="/logout"
+          className="ml-auto text-sm text-gray-400 hover:text-gray-300"
+        >
+          Logout
+        </Link>
       </div>
 
       <div className="mb-8">

@@ -22,8 +22,8 @@ export default function Home() {
         </Link>
       </div>
 
-      <div className="mt-16 max-w-5xl w-full grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-        <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <div className="mt-16 max-w-5xl w-full grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 text-center">
+        <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg hover:shadow-xl hover:scale-102 transition duration-300">
           <h3 className="text-2xl font-bold mb-2 text-indigo-400">
             Private & Public Boards
           </h3>
@@ -32,7 +32,7 @@ export default function Home() {
             compete with the community.
           </p>
         </div>
-        <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg hover:shadow-xl hover:scale-102 transition duration-300">
           <h3 className="text-2xl font-bold mb-2 text-purple-400">
             Real-Time Stats
           </h3>
@@ -41,7 +41,7 @@ export default function Home() {
             the leaderboard in real time.
           </p>
         </div>
-        <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg hover:shadow-xl hover:scale-102 transition duration-300">
           <h3 className="text-2xl font-bold mb-2 text-pink-400">
             Team Collaboration
           </h3>

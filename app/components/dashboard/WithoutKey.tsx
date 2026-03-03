@@ -56,7 +56,7 @@ export default function DashboardWithoutKey({ email }: { email: string }) {
           {loading ? "Saving..." : "Save API Key"}
         </button>
 
-        <p className="mt-6 text-sm text-gray-400 leading-relaxed">
+        <p className="mt-6 text-sm text-gray-400 leading-relaxed mb-3">
           You can get your WakaTime API key from your{" "}
           <Link
             href="https://wakatime.com/settings/account"
@@ -67,6 +67,13 @@ export default function DashboardWithoutKey({ email }: { email: string }) {
           </Link>{" "}
           on WakaTime.
         </p>
+
+        <Link
+          href="/logout"
+          className="ml-auto text-sm text-gray-400 hover:text-gray-300"
+        >
+          Logout
+        </Link>
       </div>
     </div>
   );

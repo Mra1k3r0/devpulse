@@ -24,8 +24,8 @@ export default async function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-indigo-950 to-black text-white p-10">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-indigo-950 to-black text-white p-5 md:p-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-6xl mx-auto">
         <DashboardWithKey email={profile?.email || user.email!} />
 
         <LeaderboardsList />
