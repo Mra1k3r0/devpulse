@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "../../lib/supabase/client";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import { describe } from "node:test";
 
 export default function DashboardWithKey({ email }: { email: string }) {
   const supabase = createClient();
@@ -19,11 +20,17 @@ export default function DashboardWithKey({ email }: { email: string }) {
         if (!user) return;
 
         const joinCode = crypto.randomUUID().slice(0, 8);
+        const slug = leaderboardName
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^\w-]+/g, "");
 
         const { data, error } = await supabase
           .from("leaderboards")
           .insert({
             name: leaderboardName,
+            description: "",
+            slug,
             owner_id: user.id,
             join_code: joinCode,
             is_public: true,

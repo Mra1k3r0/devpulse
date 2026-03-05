@@ -11,7 +11,7 @@ export default async function LeaderboardsList() {
 
   const { data: owned } = await supabase
     .from("leaderboards")
-    .select("id, name, join_code")
+    .select("id, name, slug, join_code")
     .eq("owner_id", user.id);
 
   const { data: joined } = await supabase
@@ -23,7 +23,7 @@ export default async function LeaderboardsList() {
 
   const navigate = (id: string) => () => {
     window.location.href = `/leaderboard/${id}`;
-  }
+  };
 
   return (
     <div className="bg-white/5 backdrop-blur-md p-8 rounded-3xl shadow-2xl border border-white/10">
@@ -33,26 +33,30 @@ export default async function LeaderboardsList() {
 
       <div className="space-y-4">
         {owned?.map((board) => (
-          <div
+          <a
             key={board.id}
-            className="p-4 rounded-xl bg-black/40 border border-gray-700 cursor-pointer transition duration-300 ease-in-out hover:scale-102"
+            href={`/leaderboard/${board.slug}`}
+            className="block p-4 rounded-xl bg-black/40 border border-gray-700
+              no-underline text-white transition duration-300 ease-in-out hover:scale-[1.02]"
           >
             <p className="font-semibold">{board.name}</p>
             <p className="text-sm text-green-400">Owner</p>
             <p className="text-sm text-gray-400">
               Join Code: {board.join_code}
             </p>
-          </div>
+          </a>
         ))}
 
         {joinedBoards.map((board: any) => (
-          <div
+          <a
             key={board.id}
-            className="p-4 rounded-xl bg-black/40 border border-gray-700 cursor-pointer transition duration-300 ease-in-out hover:scale-102"
+            href={`/leaderboard/${board.slug}`}
+            className="block p-4 rounded-xl bg-black/40 border border-gray-700
+              no-underline text-white transition duration-300 ease-in-out hover:scale-[1.02]"
           >
             <p className="font-semibold">{board.name}</p>
             <p className="text-sm text-gray-400">Member</p>
-          </div>
+          </a>
         ))}
 
         {!owned?.length && !joinedBoards.length && (

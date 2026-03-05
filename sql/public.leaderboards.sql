@@ -2,6 +2,7 @@
 create table public.leaderboards (
   id uuid primary key default gen_random_uuid(),
   name text not null,
+  slug text not null unique,
   description text,
   is_public boolean default true,
   owner_id uuid references auth.users(id) on delete cascade,
@@ -22,6 +23,22 @@ create table public.leaderboard_members (
 );
 
 alter table public.leaderboard_members enable row level security;
+
+/* ---- Leaderboards Members View ----- */
+create view public.leaderboard_members_view as
+select
+  lm.id,
+  lm.leaderboard_id,
+  lm.user_id,
+  lm.role,
+  u.email,
+  us.total_seconds,
+  us.languages,
+  us.operating_systems,
+  us.editors
+from public.leaderboard_members lm
+join auth.users u on lm.user_id = u.id
+left join public.user_stats us on lm.user_id = us.user_id;
 
 /* ---- RLS Policies ----- */
 create policy "Public leaderboards are viewable"
