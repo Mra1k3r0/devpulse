@@ -1,60 +1,121 @@
-import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-indigo-950 to-black text-white flex flex-col items-center justify-center px-4">
-      <div className="p-10 max-w-3xl text-center">
-        <h1 className="text-6xl font-extrabold mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-indigo-950 to-black text-white overflow-hidden">
+      <section className="min-h-screen flex flex-col items-center justify-center relative max-w-6xl mx-auto px-6 pt-28 pb-32 text-center">
+        <div className="absolute inset-0 -z-10 flex justify-center">
+          <div className="w-[600px] h-[600px] bg-purple-600/20 blur-[160px] rounded-full" />
+        </div>
+
+        <h1 className="text-6xl md:text-7xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 text-transparent bg-clip-text">
           DevPulse
         </h1>
-        <p className="text-gray-300 text-lg md:text-xl mb-8">
-          Monitor your coding activity, create custom leaderboards, and compete
-          with your team or the community. DevPulse brings WakaTime stats into a
-          sleek, collaborative leaderboard experience.
+
+        <p className="mt-6 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
+          Turn your coding activity into competitive leaderboards. Track
+          productivity, motivate your team, and visualize real coding impact
+          using WakaTime insights.
         </p>
 
-        <Link
-          href="/signup"
-          className="px-10 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-purple-500 hover:to-indigo-500 rounded-xl shadow-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105"
-        >
-          Get Started
-        </Link>
-      </div>
+        <div className="mt-10 flex justify-center gap-4">
+          <Link
+            href="/signup"
+            className="px-10 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 font-semibold shadow-xl hover:scale-105 transition"
+          >
+            Get Started
+          </Link>
 
-      <div className="mt-16 max-w-5xl w-full grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 text-center">
-        <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg hover:shadow-xl hover:scale-102 transition duration-300">
-          <h3 className="text-2xl font-bold mb-2 text-indigo-400">
-            Private & Public Boards
-          </h3>
-          <p className="text-gray-400">
-            Create private boards for your team or open public leaderboards to
-            compete with the community.
-          </p>
+          <Link
+            href="/login"
+            className="px-10 py-4 rounded-xl border border-white/20 hover:bg-white/10 transition"
+          >
+            Login
+          </Link>
         </div>
-        <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg hover:shadow-xl hover:scale-102 transition duration-300">
-          <h3 className="text-2xl font-bold mb-2 text-purple-400">
-            Real-Time Stats
-          </h3>
-          <p className="text-gray-400">
-            Sync your WakaTime data automatically and watch your progress climb
-            the leaderboard in real time.
-          </p>
-        </div>
-        <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg hover:shadow-xl hover:scale-102 transition duration-300">
-          <h3 className="text-2xl font-bold mb-2 text-pink-400">
-            Team Collaboration
-          </h3>
-          <p className="text-gray-400">
-            Invite teammates, compare coding activity, and foster a culture of
-            productivity and friendly competition.
-          </p>
-        </div>
-      </div>
+      </section>
 
-      <footer className="mt-20 text-gray-500 text-sm">
-        &copy; {new Date().getFullYear()} DevPulse. All rights reserved.
+      <section className="max-w-6xl mx-auto px-6 pb-28 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <Feature
+          color="text-indigo-400"
+          title="Private & Public Boards"
+          description="Create private boards for your team or open public leaderboards to compete with the community."
+        />
+
+        <Feature
+          color="text-purple-400"
+          title="Real-Time Stats"
+          description="Sync your WakaTime data automatically and watch your progress climb the leaderboard."
+        />
+
+        <Feature
+          color="text-pink-400"
+          title="Team Collaboration"
+          description="Invite teammates, compare coding activity, and foster a culture of productivity."
+        />
+      </section>
+
+      <section className="max-w-4xl mx-auto px-6 pb-32 text-center">
+        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-12">
+          <h2 className="text-3xl font-bold mb-4">
+            Ready to track your coding productivity?
+          </h2>
+
+          <p className="text-gray-400 mb-8">
+            Join developers and teams competing on DevPulse.
+          </p>
+
+          <Link
+            href="/signup"
+            className="px-10 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 font-semibold hover:scale-105 transition"
+          >
+            Create Free Account
+          </Link>
+        </div>
+      </section>
+
+      <footer className="border-t border-white/10 mt-20 py-8 text-center text-sm text-gray-400">
+        <p className="font-medium text-gray-300">
+          © {new Date().getFullYear()} DevPulse
+        </p>
+
+        <p className="mt-1">
+          A creation by{" "}
+          <span className="text-indigo-400 font-medium">
+            Melvin Jones Repol
+          </span>
+        </p>
+
+        <p className="text-gray-500">
+          Open source on{" "}
+          <a
+            href="https://github.com/mrepol742/devpulse"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-400 hover:text-indigo-300 underline-offset-4 hover:underline transition"
+          >
+            GitHub
+          </a>
+        </p>
       </footer>
+    </div>
+  );
+}
+
+function Feature({
+  title,
+  description,
+  color,
+}: {
+  title: string;
+  description: string;
+  color: string;
+}) {
+  return (
+    <div className="group bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 transition hover:bg-white/10 hover:scale-[1.02]">
+      <h3 className={`text-xl font-semibold mb-3 ${color}`}>{title}</h3>
+
+      <p className="text-gray-400">{description}</p>
     </div>
   );
 }
