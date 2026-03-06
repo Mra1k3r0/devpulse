@@ -1,5 +1,6 @@
 import { createClient } from "../../../lib/supabase/server";
 import LeaderboardTable from "../../../components/LeaderboardTable";
+import LeaderboardHeader from "@/app/components/leaderboard/Header";
 
 export default async function LeaderboardPage(props: {
   params: Promise<{ slug: string }>;
@@ -26,6 +27,12 @@ export default async function LeaderboardPage(props: {
     .select("*")
     .eq("leaderboard_id", leaderboard.id);
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const isOwner = user?.id === leaderboard.owner_id;
+
   if (error) {
     console.error("Error fetching members:", error);
     return (
@@ -38,9 +45,14 @@ export default async function LeaderboardPage(props: {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-indigo-950 to-black text-white p-10">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">{leaderboard.name}</h1>
-        <p className="text-gray-400 mb-8">{leaderboard.description}</p>
-        <LeaderboardTable members={members || []} />
+        <div className="max-w-5xl mx-auto">
+          <LeaderboardHeader leaderboard={leaderboard} isOwner={isOwner} />
+        </div>
+        <LeaderboardTable
+          members={members || []}
+          isOwner={isOwner}
+          ownerId={user?.id}
+        />
       </div>
     </div>
   );

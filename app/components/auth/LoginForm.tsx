@@ -115,9 +115,9 @@ export default function LoginForm() {
       </form>
 
       {showCaptcha && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50 rounded-3xl">
-          <div className="bg-gray-900 p-6 shadow-xl text-center">
-            <h2 className="text-lg font-semibold mb-4">Verify you are human</h2>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50 rounded-2xl">
+          <div className="bg-gray-900 border border-gray-700 p-8 shadow-2xl text-center rounded-2xl">
+            <h3 className="text-xl font-semibold mb-4">Verify you are human</h3>
 
             <HCaptcha
               ref={captcha}

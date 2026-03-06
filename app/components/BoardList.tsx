@@ -23,10 +23,7 @@ export default function BoardList({
       .delete()
       .eq("id", board.id);
 
-    if (error)
-      return toast.error("Failed to delete leaderboard. Please try again.");
-
-    setShowDeleteModal(false);
+    if (error) setShowDeleteModal(false);
     window.location.reload();
   };
 
@@ -60,8 +57,8 @@ export default function BoardList({
       </div>
 
       {showCodeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm rounded-2xl">
-          <div className="bg-gray-900 border border-gray-700 p-8 w-[90%] max-w-md shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 rounded-2xl">
+          <div className="bg-gray-900 border border-gray-700 p-8 w-[90%] max-w-md shadow-2xl rounded-2xl">
             <h3 className="text-xl font-semibold mb-4">
               Leaderboard Join Code
             </h3>
@@ -81,8 +78,8 @@ export default function BoardList({
       )}
 
       {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm rounded-2xl">
-          <div className="bg-gray-900 border border-gray-700 p-8 w-[90%] max-w-md shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 rounded-2xl">
+          <div className="bg-gray-900 border border-gray-700 p-8 w-[90%] max-w-md shadow-2xl rounded-2xl">
             <h3 className="text-xl font-semibold mb-4">
               Are you sure you want to delete this leaderboard?
             </h3>

@@ -1,4 +1,8 @@
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 type Member = {
+  user_id: string;
   role: string;
   email: string;
   total_seconds: number;
@@ -69,10 +73,20 @@ function LeaderboardStats({ members }: { members: Member[] }) {
   );
 }
 
-export default function LeaderboardTable({ members }: { members: Member[] }) {
+export default function LeaderboardTable({
+  members,
+  isOwner,
+  ownerId,
+}: {
+  members: Member[];
+  isOwner: boolean;
+  ownerId?: string;
+}) {
+  console.log(JSON.stringify(members));
   const ranked = members
     .sort((a, b) => (b.total_seconds || 0) - (a.total_seconds || 0))
     .map((member, index) => ({
+      user_id: member.user_id,
       rank: index + 1,
       email: member.email,
       hours: Math.round((member.total_seconds || 0) / 3600),
@@ -93,15 +107,26 @@ export default function LeaderboardTable({ members }: { members: Member[] }) {
         {ranked.map((user) => (
           <div
             key={user.email}
-            className="bg-white/5 border border-white/10 rounded-2xl p-5
-            hover:bg-white/10 transition"
+            className={`bg-white/5 border rounded-2xl p-5
+              hover:bg-white/10 transition  ${user.user_id === ownerId ? "border-yellow-300" : "border-white/10"}`}
           >
             <div className="flex justify-between items-center mb-3">
               <span className="text-lg font-bold text-indigo-400">
                 #{user.rank}
               </span>
 
-              <span className="text-sm text-gray-400">{user.hours} hrs</span>
+              <div>
+                <span className="text-sm text-gray-400">{user.hours} hrs</span>
+                {/*
+                {isOwner && user.user_id !== ownerId && (
+                  <button className="ml-2">
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      className="text-red-500 ml-2 cursor-pointer hover:text-red-400 transition"
+                    />
+                  </button>
+                )}*/}
+              </div>
             </div>
 
             <p className="font-semibold text-white mb-4 truncate">
