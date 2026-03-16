@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createClient } from "../../../lib/supabase/client";
 import { toast } from "react-toastify";
-import { User } from "@supabase/supabase-js";
+import type { User } from "@supabase/supabase-js";
 
 export default function UserProfile({ user }: { user: User }) {
   const supabase = createClient();
