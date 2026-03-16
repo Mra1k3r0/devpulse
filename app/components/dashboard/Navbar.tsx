@@ -11,18 +11,20 @@ import {
   faRightFromBracket,
   faChevronLeft,
   faChevronRight,
+  faGear,
 } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 const SidebarContext = createContext({ collapsed: false });
 
-function Sidebar({ email }: { email: string }) {
+function Sidebar({ email, name }: { email: string; name: string }) {
   const pathname = usePathname();
   const { collapsed } = useContext(SidebarContext);
 
   const navItems: { href: string; label: string; icon: IconDefinition }[] = [
     { href: "/dashboard", label: "Dashboard", icon: faChartLine },
     { href: "/dashboard/leaderboards", label: "Leaderboards", icon: faTrophy },
+    { href: "/dashboard/settings", label: "Settings", icon: faGear },
   ];
 
   return (
@@ -56,7 +58,7 @@ function Sidebar({ email }: { email: string }) {
           {!collapsed && (
             <div className="min-w-0">
               <p className="text-sm font-medium text-gray-200 truncate">
-                {email.split("@")[0]}
+                {name}
               </p>
               <p className="text-[11px] text-gray-600 truncate">{email}</p>
             </div>
@@ -115,9 +117,11 @@ function Sidebar({ email }: { email: string }) {
 
 export default function DashboardLayout({
   email,
+  name,
   children,
 }: {
   email: string;
+  name: string;
   children: React.ReactNode;
 }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -125,7 +129,7 @@ export default function DashboardLayout({
   return (
     <SidebarContext.Provider value={{ collapsed }}>
       <div className="min-h-screen bg-[#0a0a1a] text-white">
-        <Sidebar email={email} />
+        <Sidebar email={email} name={name} />
 
         {/* Collapse Toggle */}
         <button

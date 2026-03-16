@@ -1,0 +1,98 @@
+"use client";
+
+import { useRef, useState } from "react";
+import { createClient } from "../../../lib/supabase/client";
+import { toast } from "react-toastify";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
+
+export default function ResetPassword({ user }: any) {
+  const supabase = createClient();
+  const [email] = useState(user?.email || "");
+  const [loading, setLoading] = useState(false);
+  const captcha = useRef<HCaptcha>(null);
+  const [showCaptcha, setShowCaptcha] = useState(false);
+
+  const handleCaptchaVerify = async (token: string) => {
+    setShowCaptcha(false);
+    setLoading(true);
+
+    const resetUserPassword = new Promise(async (resolve, reject) => {
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${location.origin}/update-password`,
+          captchaToken: token,
+        });
+
+        if (error) return reject(error);
+        resolve("Reset email sent!");
+      } catch (error) {
+        reject(error);
+      }
+    });
+
+    toast.promise(resetUserPassword, {
+      pending: "Sending reset email...",
+      success: {
+        render() {
+          if (captcha.current) captcha.current.resetCaptcha();
+          setLoading(false);
+          return "Reset email sent!";
+        },
+      },
+      error: {
+        render({ data }) {
+          if (captcha.current) captcha.current.resetCaptcha();
+          setLoading(false);
+          const err = data as Error;
+          return (
+            err?.message || "Failed to send reset email. Please try again."
+          );
+        },
+      },
+    });
+  };
+
+  const handleResetPassword = async (
+    e: React.SyntheticEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault();
+    setShowCaptcha(true);
+  };
+
+  return (
+    <>
+      <form onSubmit={handleResetPassword} className="glass-card p-6">
+        <h3 className="text-xs font-semibold text-indigo-400 uppercase tracking-widest mb-5">
+          Reset Password
+        </h3>
+
+        <button type="submit" disabled={loading} className="btn-primary">
+          Send Reset Email
+        </button>
+      </form>
+
+      {showCaptcha && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50 backdrop-blur-sm">
+          <div className="glass-card p-8 text-center">
+            <h3 className="text-lg font-semibold mb-4 text-gray-200">
+              Verify you are human
+            </h3>
+
+            <HCaptcha
+              ref={captcha}
+              sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""}
+              onVerify={handleCaptchaVerify}
+            />
+
+            <button
+              onClick={() => setShowCaptcha(false)}
+              className="mt-4 text-sm text-gray-500 hover:text-gray-300 transition"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

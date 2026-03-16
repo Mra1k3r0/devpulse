@@ -26,6 +26,11 @@ export default async function Layout({
   }
 
   const email = profile?.email || user.email!;
+  const name = user?.user_metadata?.name || email.split("@")[0];
 
-  return <DashboardLayout email={email}>{children}</DashboardLayout>;
+  return (
+    <DashboardLayout email={email} name={name}>
+      {children}
+    </DashboardLayout>
+  );
 }
