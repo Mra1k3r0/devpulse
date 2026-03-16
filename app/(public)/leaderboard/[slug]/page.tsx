@@ -1,6 +1,8 @@
 import { createClient } from "../../../lib/supabase/server";
 import LeaderboardTable from "../../../components/LeaderboardTable";
 import LeaderboardHeader from "@/app/components/leaderboard/Header";
+import Footer from "@/app/components/layout/Footer";
+import CTA from "@/app/components/layout/CTA";
 
 export default async function LeaderboardPage(props: {
   params: Promise<{ slug: string }>;
@@ -59,6 +61,9 @@ export default async function LeaderboardPage(props: {
           ownerId={user?.id}
         />
       </div>
+
+      <CTA />
+      <Footer />
     </div>
   );
 }

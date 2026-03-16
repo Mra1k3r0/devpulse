@@ -46,23 +46,33 @@ function LeaderboardStats({ members }: { members: Member[] }) {
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
       <div className="stat-card text-center">
         <p className="text-2xl font-bold text-white">{totalHours}</p>
-        <p className="text-xs text-indigo-400 mt-1 uppercase tracking-wider">Total Hours</p>
+        <p className="text-xs text-indigo-400 mt-1 uppercase tracking-wider">
+          Total Hours
+        </p>
       </div>
       <div className="stat-card text-center">
         <p className="text-lg font-bold text-white truncate">{topLanguage}</p>
-        <p className="text-xs text-indigo-400 mt-1 uppercase tracking-wider">Top Language</p>
+        <p className="text-xs text-indigo-400 mt-1 uppercase tracking-wider">
+          Top Language
+        </p>
       </div>
       <div className="stat-card text-center">
         <p className="text-lg font-bold text-white truncate">{leastLanguage}</p>
-        <p className="text-xs text-gray-500 mt-1 uppercase tracking-wider">Least Language</p>
+        <p className="text-xs text-gray-500 mt-1 uppercase tracking-wider">
+          Least Language
+        </p>
       </div>
       <div className="stat-card text-center">
         <p className="text-lg font-bold text-white truncate">{topEditor}</p>
-        <p className="text-xs text-indigo-400 mt-1 uppercase tracking-wider">Top Editor</p>
+        <p className="text-xs text-indigo-400 mt-1 uppercase tracking-wider">
+          Top Editor
+        </p>
       </div>
       <div className="stat-card text-center">
         <p className="text-lg font-bold text-white truncate">{topOS}</p>
-        <p className="text-xs text-indigo-400 mt-1 uppercase tracking-wider">Top OS</p>
+        <p className="text-xs text-indigo-400 mt-1 uppercase tracking-wider">
+          Top OS
+        </p>
       </div>
     </div>
   );
@@ -105,9 +115,9 @@ export default function LeaderboardTable({
       <LeaderboardStats members={members} />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {ranked.map((user) => (
+        {ranked.map((user, index) => (
           <div
-            key={user.email}
+            key={index}
             className={`glass-card p-5 ${
               user.user_id === ownerId
                 ? "!border-indigo-500/40 shadow-[0_0_20px_rgba(99,102,241,0.1)]"
@@ -125,7 +135,7 @@ export default function LeaderboardTable({
             </div>
 
             <p className="font-semibold text-white mb-4 truncate text-sm">
-              {user.email}
+              {user.email.split("@")[0]}
             </p>
 
             <div className="space-y-1.5 text-sm">

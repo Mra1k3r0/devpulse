@@ -37,6 +37,8 @@ export default function RootLayout({
           name="google-site-verification"
           content="9BoujBl0viqXOwAOwv8uJM-JkJo7gDrt_f1ID9NabRI"
         />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="hostname" content="devpulse-waka.vercel.app" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

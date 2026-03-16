@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "./lib/supabase/server";
+import Footer from "./components/layout/Footer";
+import CTA from "./components/layout/CTA";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -82,23 +84,7 @@ export default async function Home() {
         />
       </section>
 
-      {/* CTA */}
-      <section className="max-w-4xl mx-auto px-6 pb-8 text-center">
-        <div className="glass-card p-12" data-aos="fade-up">
-          <h2 className="text-3xl font-bold mb-4 gradient-text">
-            Ready to track your coding productivity?
-          </h2>
-          <p className="text-gray-400 mb-8">
-            Join developers and teams competing on DevPulse.
-          </p>
-          <Link
-            href="/signup"
-            className="btn-primary inline-block px-8 py-4"
-          >
-            Create Free Account
-          </Link>
-        </div>
-      </section>
+      <CTA />
 
       {/* Recent Leaderboards */}
       {data && data.length > 0 && (
@@ -129,29 +115,7 @@ export default async function Home() {
         </section>
       )}
 
-      {/* Footer */}
-      <footer className="border-t border-white/5 mt-20 py-10 text-center text-sm text-gray-500">
-        <p className="font-medium text-gray-400">
-          © {new Date().getFullYear()} DevPulse
-        </p>
-        <p className="mt-1">
-          A creation by{" "}
-          <span className="text-indigo-400 font-medium">
-            Melvin Jones Repol
-          </span>
-        </p>
-        <p className="mt-1 text-gray-600">
-          Open source on{" "}
-          <a
-            href="https://github.com/mrepol742/devpulse"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-indigo-500 hover:text-indigo-400 underline-offset-4 hover:underline transition"
-          >
-            GitHub
-          </a>
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }
