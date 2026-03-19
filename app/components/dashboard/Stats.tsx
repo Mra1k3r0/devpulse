@@ -88,8 +88,10 @@ export default function Stats() {
   };
 
   const formatHours = (seconds: number) => {
-    const hrs = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
+    const safeSeconds = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
+    const totalMinutes = Math.round(safeSeconds / 60);
+    const hrs = Math.floor(totalMinutes / 60);
+    const mins = totalMinutes % 60;
     if (hrs > 0) return `${hrs}h ${mins}m`;
     return `${mins}m`;
   };
@@ -106,14 +108,14 @@ export default function Stats() {
   const topLang = stats.languages[0]?.name || "N/A";
   const topEditor = stats.editors[0]?.name || "N/A";
 
-  // Generate mock daily data from total (WakaTime API gives weekly aggregate)
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const avgPerDay = stats.total_seconds / 7;
   const dailyData = days.map((day, i) => {
-    const variance = 0.4 + Math.sin(i * 1.5 + 1) * 0.6;
+    const varianceRaw = 0.4 + Math.sin(i * 1.5 + 1) * 0.6;
+    const variance = Math.max(0, varianceRaw);
     return {
       day,
-      hours: parseFloat(((avgPerDay * variance) / 3600).toFixed(1)),
+      hours: Math.max(0, parseFloat(((avgPerDay * variance) / 3600).toFixed(1))),
     };
   });
 
@@ -241,7 +243,14 @@ export default function Stats() {
                 </p>
                 <p className="text-xs text-gray-600">{card.sub}</p>
                 {/* Mini bar */}
-                <div className="mt-3 h-1 rounded-full bg-white/5 overflow-hidden">
+                <div
+                  className="mt-3 h-1 rounded-full bg-white/5 overflow-hidden cursor-pointer"
+                  role="button"
+                  onClick={() => {
+                    setAnimated(false);
+                    setTimeout(() => setAnimated(true), 10);
+                  }}
+                >
                   <div
                     className="h-full rounded-full transition-all duration-[2000ms] ease-in-out"
                     style={{
