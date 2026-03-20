@@ -207,7 +207,7 @@ export default function Stats({ name = "User", email = "user@example.com" }: Sta
    */
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 md:p-8 space-y-6">
       {/* Header */}
       <div
         className="relative z-50 flex flex-row justify-between items-center w-full gap-4"
