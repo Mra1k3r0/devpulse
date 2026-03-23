@@ -4,9 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import { RealtimeChannel, User } from "@supabase/supabase-js";
 import { createClient } from "../lib/supabase/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFile,
+  faPaperPlane,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import Conversations from "./chat/Conversations";
 import Messages from "./chat/Messages";
+import Image from "next/image";
+import { toast } from "react-toastify";
 
 export interface Conversation {
   id: string;
@@ -19,6 +25,12 @@ export interface Message {
   conversation_id: string;
   sender_id: string;
   text: string;
+  attachments: {
+    filename: string;
+    mimetype: string;
+    filesize: number;
+    public_url: string;
+  }[];
   created_at: string;
 }
 
@@ -39,6 +51,8 @@ export interface ConversationParticipantRow {
   conversation: ConversationParticipant[];
 }
 
+type Attachment = File;
+
 const supabase = createClient();
 
 export default function Chat({ user }: { user: User }) {
@@ -54,6 +68,9 @@ export default function Chat({ user }: { user: User }) {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const [badWords, setBadWords] = useState<string[]>([]);
   const creatingRef = useRef(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const bucketName = process.env.NEXT_PUBLIC_SUPABASE_BUCKET_NAME || "";
 
   useEffect(() => {
     fetch(
@@ -65,13 +82,6 @@ export default function Chat({ user }: { user: User }) {
         setBadWords(wordsArray);
       });
   }, []);
-
-  const sanitizeInput = (input: string) => {
-    if (!badWords.length) return input;
-
-    const filter = new RegExp(`\\b(${badWords.join("|")})\\b`, "gi");
-    return input.replace(filter, "*-?;[]");
-  };
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -207,6 +217,7 @@ export default function Chat({ user }: { user: User }) {
               conversation_id: payload.new.conversation_id,
               sender_id: payload.new.sender_id,
               text: payload.new.text,
+              attachments: payload.new.attachments,
               created_at: payload.new.created_at,
             },
           ]);
@@ -226,7 +237,7 @@ export default function Chat({ user }: { user: User }) {
         .eq("conversation_id", conversationId)
         .order("created_at", { ascending: true });
       if (data) {
-        setMessages(data);
+        setMessages(data as Message[]);
         setTimeout(() => {
           bottomRef.current?.scrollIntoView({ behavior: "smooth" });
         }, 100);
@@ -260,6 +271,24 @@ export default function Chat({ user }: { user: User }) {
 
     fetchUsers();
   }, [showModal, user.id]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    setAttachments((prev) => [...prev, ...files]);
+  };
+
+  const removeAttachment = (index: number) => {
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const sanitizeInput = (input: string) => {
+    if (!badWords.length) return input;
+
+    const filter = new RegExp(`\\b(${badWords.join("|")})\\b`, "gi");
+    return input.replace(filter, "*-?;[]");
+  };
 
   const createConversation = async (otherUser: ChatUser) => {
     if (creatingRef.current) return;
@@ -320,19 +349,62 @@ export default function Chat({ user }: { user: User }) {
   };
 
   const sendMessage = async () => {
-    if (!input.trim() || !conversationId) return;
+    if ((!input.trim() && attachments.length === 0) || !conversationId) return;
 
-    await supabase.from("messages").insert({
-      conversation_id: conversationId,
-      sender_id: user.id,
-      text: sanitizeInput(input.slice(0, 1000)), // limit to 1000 chars
-    });
+    try {
+      const uploadedAttachments = await Promise.all(
+        attachments.map(async (file) => {
+          if (!bucketName || bucketName.length === 0) {
+            toast.error("Storage bucket is not configured.");
+            return null;
+          }
+          if (file.size > 10 * 1024 * 1024) {
+            toast.error(`${file.name} is too large. Max size is 10MB.`);
+            return null;
+          }
 
-    setTimeout(() => {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
+          const filePath = `messages/${conversationId}/${Date.now()}-${file.name}`;
 
-    setInput("");
+          const { error: uploadError } = await supabase.storage
+            .from(bucketName)
+            .upload(filePath, file);
+
+          if (uploadError) {
+            console.error("Upload error:", uploadError);
+            return null;
+          }
+
+          const { data } = supabase.storage
+            .from(bucketName)
+            .getPublicUrl(filePath);
+
+          return {
+            filename: file.name,
+            mimetype: file.type,
+            filesize: file.size,
+            public_url: data.publicUrl,
+          };
+        }),
+      );
+
+      const validAttachments = uploadedAttachments.filter(Boolean);
+
+      await supabase.from("messages").insert({
+        conversation_id: conversationId,
+        sender_id: user.id,
+        text: sanitizeInput(input.slice(0, 1000)),
+        attachments: validAttachments,
+      });
+
+      setTimeout(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+
+      setInput("");
+      setAttachments([]);
+    } catch (err) {
+      console.error("Send message error:", err);
+    }
   };
 
   return (
@@ -368,7 +440,48 @@ export default function Chat({ user }: { user: User }) {
           />
 
           <div className="p-4 border-t border-neutral-700">
+            {attachments.length > 0 && (
+              <div className="mb-2 flex flex-wrap gap-2">
+                {attachments.map((file, index) => (
+                  <div
+                    key={index}
+                    className="bg-neutral-700 text-sm px-3 py-1 rounded flex items-center gap-2"
+                  >
+                    {file.type.startsWith("image/") ? (
+                      <Image
+                        src={URL.createObjectURL(file)}
+                        alt={file.name}
+                        width={20}
+                        height={20}
+                        className="w-6 h-6 rounded object-cover"
+                      />
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faFile}
+                        className="w-4 h-4 text-gray-400"
+                      />
+                    )}
+                    <span className="truncate max-w-[120px]">{file.name}</span>
+                    <button
+                      onClick={() => removeAttachment(index)}
+                      className="text-red-400 hover:text-red-300"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
             <div className="bg-neutral-800 rounded flex">
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+                multiple
+              />
+
               <textarea
                 ref={textareaRef}
                 value={input}
@@ -387,6 +500,14 @@ export default function Chat({ user }: { user: User }) {
                   maxHeight: "calc(1.5rem * 6)",
                 }}
               />
+
+              <button onClick={() => fileInputRef.current?.click()}>
+                <FontAwesomeIcon
+                  icon={faFile}
+                  className="text-gray-500 hover:text-gray-300 transition mx-2"
+                />
+              </button>
+
               <button
                 onClick={sendMessage}
                 className="bg-indigo-500 px-4 rounded max-h-12"
