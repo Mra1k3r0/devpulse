@@ -111,10 +111,10 @@ export default function Messages({
             <div
               key={idx}
               className={`group flex gap-2.5 items-end transition-colors ${
-                isSelf ? "flex-row-reverse" : "flex-row"
+                isSelf ? "justify-end" : "justify-start"
               }`}
             >
-              {!isSelf ? (
+              {!isSelf && (
                 <div
                   className={`flex-shrink-0 ${avatarTranslateClass} w-8 h-8 rounded-full bg-neutral-700 border border-white/10 flex items-center justify-center aspect-square overflow-hidden`}
                 >
@@ -122,8 +122,6 @@ export default function Messages({
                     {senderInitial}
                   </span>
                 </div>
-              ) : (
-                <div className="w-8 flex-shrink-0" aria-hidden />
               )}
 
               <div
