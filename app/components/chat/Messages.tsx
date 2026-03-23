@@ -7,6 +7,9 @@ import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { Conversation, Message } from "../Chat";
 import { timeAgo } from "@/app/utils/time";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import { faFile } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Messages({
   messages,
@@ -127,6 +130,16 @@ export default function Messages({
                 >
                   {msg.text}
                 </ReactMarkdown>
+
+                {msg.attachments && msg.attachments.length > 0 && (
+                  <div className="mt-2">
+                    {msg.attachments.map((attachment, idx) => (
+                      <div key={idx} className="mb-2">
+                        {getAttachments(attachment)}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="text-muted text-xs mt-1">
@@ -140,4 +153,49 @@ export default function Messages({
       </div>
     </>
   );
+}
+
+function getAttachments(attachment: {
+  mimetype: string;
+  public_url: string;
+  filename: string;
+}) {
+  switch (attachment.mimetype.split("/")[0]) {
+    case "image":
+      return (
+        <Image
+          src={attachment.public_url}
+          alt={attachment.filename}
+          className="max-w-full rounded"
+          width={400}
+          height={300}
+        />
+      );
+    case "video":
+      return (
+        <video controls className="max-w-full rounded">
+          <source src={attachment.public_url} type={attachment.mimetype} />
+          Your browser does not support the video tag.
+        </video>
+      );
+    case "audio":
+      return (
+        <audio controls className="w-full">
+          <source src={attachment.public_url} type={attachment.mimetype} />
+          Your browser does not support the audio element.
+        </audio>
+      );
+    default:
+      return (
+        <a
+          href={attachment.public_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 hover:underline"
+        >
+          <FontAwesomeIcon icon={faFile} className="mr-1" />
+          {attachment.filename}
+        </a>
+      );
+  }
 }

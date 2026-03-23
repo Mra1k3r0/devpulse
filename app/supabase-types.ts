@@ -18,16 +18,19 @@ export type Database = {
         Row: {
           conversation_id: string
           email: string | null
+          type: string
           user_id: string
         }
         Insert: {
           conversation_id: string
           email?: string | null
+          type?: string
           user_id: string
         }
         Update: {
           conversation_id?: string
           email?: string | null
+          type?: string
           user_id?: string
         }
         Relationships: [
@@ -125,6 +128,7 @@ export type Database = {
       }
       messages: {
         Row: {
+          attachments: Json
           conversation_id: string
           created_at: string
           id: string
@@ -132,6 +136,7 @@ export type Database = {
           text: string
         }
         Insert: {
+          attachments?: Json
           conversation_id: string
           created_at?: string
           id?: string
@@ -139,6 +144,7 @@ export type Database = {
           text: string
         }
         Update: {
+          attachments?: Json
           conversation_id?: string
           created_at?: string
           id?: string
